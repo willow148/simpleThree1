@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <title>Three.js Test</title>
+    <meta charset="utf-8" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.167.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.167.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div>
+      <canvas id="myCanvas"></canvas>
+    </div>
+    <script type="module">
+      import * as THREE from "three";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+      // サイズを指定
+      const width = 960;
+      const height = 540;
+
+      // マウス座標
+      const mouse = new THREE.Vector2();
+      let mouseflag = false;
+
+      // レンダラーを作成
+      const canvas = document.getElementById("myCanvas");
+      const renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true
+      });
+      renderer.setSize(width, height);
+      renderer.shadowMap.enable = true; //影を許可
+
+      // シーンを作成
+      const scene = new THREE.Scene();
+
+      // カメラを作成
+      const camera = new THREE.PerspectiveCamera(45, width / height);
+      // カメラの初期座標を設定
+      camera.position.set(10, 10, 10);
+      camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+      // カメラコントローラーを作成
+      const controls = new OrbitControls(camera, canvas);
+
+      // ライトを作成
+      const light = new THREE.HemisphereLight(0xffffff, 0x000000, 1.0);
+      light.castShadow = true; //影を許可
+      scene.add(light);
+
+      // 形状とマテリアルからメッシュを作成します
+      const geometryCube = new THREE.BoxGeometry(1, 1, 1);
+      
+      const standardMaterial = [
+        new THREE.MeshStandardMaterial({color: 0xff0000, roughness:0.1, alphaToCoverage:true}),
+        new THREE.MeshStandardMaterial({color: 0xffff00, roughness:0.1, alphaToCoverage:true}),
+        new THREE.MeshStandardMaterial({color: 0xffffff, roughness:0.1, alphaToCoverage:true}),
+        new THREE.MeshStandardMaterial({color: 0x000000, roughness:0.1, alphaToCoverage:true}),   
+        new THREE.MeshStandardMaterial({color: 0xff00ff, roughness:0.1, alphaToCoverage:true}),
+        new THREE.MeshStandardMaterial({color: 0x00ff00, roughness:0.1, alphaToCoverage:true}),
+      ];
+      const basicMaterial = new THREE.MeshBasicMaterial({
+        color: "#ff0000",
+        alphaToCoverage: true
+      })
+      const mesh = new THREE.Mesh(geometryCube, standardMaterial);
+      mesh.position.set(0, 0, 0);
+      mesh.castShadow = true; //影を許可
+      scene.add(mesh);
+
+      // 軸を追加する。
+      const axesHelper = new THREE.AxesHelper(1000);
+      //scene.add(axesHelper);
+
+      canvas.addEventListener("mousedown", (e) => {
+        mouse.x = (e.offsetX / canvas.offsetWidth) * 2 - 1;
+        mouse.y = -(e.offsetY / canvas.offsetHeight) * 2 + 1;
+        // レイキャストを作成
+        const raycaster = new THREE.Raycaster();
+        // レイキャスト = マウス位置からまっすぐに伸びる光線ベクトルを生成
+        raycaster.setFromCamera(mouse, camera);
+        // その光線とぶつかったオブジェクトを得る
+        const intersects = raycaster.intersectObjects(scene.children);
+        for (let i = 0; i < intersects.length; i++) {
+          if (mesh === intersects[0].object) {
+            for (let j = 0; j < mesh.material.length; j++) {
+              mesh.material[j].transparent = true;
+              mesh.material[j].opacity = 0.5;
+            }
+          }
+        }
+      });
+
+      canvas.addEventListener("mouseup", () => {
+        for (let j = 0; j < mesh.material.length; j++) {
+          mesh.material[j].transparent = false;
+          mesh.material[j].opacity = 1;
+        }
+      });
+
+      
+      tick();
+      // フレームごとに実行されるループ
+      function tick() {
+
+        //console.log(mouseDown);
+        
+        // レイキャスト = マウス位置からまっすぐに伸びる光線ベクトルを生成
+        // raycaster.setFromCamera(mouse, camera);
+
+        // その光線とぶつかったオブジェクトを得る
+        /*
+        const intersects = raycaster.intersectObjects(scene.children);
+        for (let i = 0; i < intersects.length; i++) {
+          if (mesh === intersects[0].object) {
+            for (let j = 0; j < mesh.material.length; j++) {
+              if (mouseflag) {
+                mesh.material[j].transparent = true;
+                mesh.material[j].opacity = 0.5;
+              } else {
+                mesh.material[j].transparent = false;
+                mesh.material[j].opacity = 1;
+              }
+            }
+          }
+        }
+        */
+
+        // レンダリング
+        renderer.render(scene, camera);
+        requestAnimationFrame(tick);
+      }
+    </script>
+  </body>
+</html>
