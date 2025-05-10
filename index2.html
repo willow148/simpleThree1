@@ -38,10 +38,12 @@
       //renderer.shadowMap.enable = true; //影を許可
 
       canvas.addEventListener("mousedown", (e) => {
-        const x = e.clientX - canvas.offsetLeft;
-        const y = e.clientY - canvas.offsetTop;
-        mouse.x = (x / canvas.offsetWidth) * 2 - 1;
-        mouse.y = -(y / canvas.offsetHeight) * 2 + 1;
+        //const x = e.clientX - canvas.offsetLeft;
+        //const y = e.clientY - canvas.offsetTop;
+        //mouse.x = (x / canvas.offsetWidth) * 2 - 1;
+        //mouse.y = -(y / canvas.offsetHeight) * 2 + 1;
+        mouse.x = (e.offsetX / canvas.offsetWidth) * 2 - 1;
+        mouse.y = -(e.offsetY / canvas.offsetHeight) * 2 + 1;
         mouseflag = true;
       });
 
