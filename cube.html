@@ -24,7 +24,7 @@
       const width = 960;
       const height = 540;
 
-      // レンダラーを作成
+      // レンダラーとCanvasを作成　・・・・・・・・・・・・・・・・・・・・・・・・・・・・（１）
       const canvas = document.getElementById("myCanvas");
       const renderer = new THREE.WebGLRenderer({
         canvas: canvas
@@ -32,10 +32,10 @@
       renderer.setSize(width, height);
       renderer.shadowMap.enable = true; //影を許可
 
-      // シーンを作成
+      // シーンを作成　・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・（２）
       const scene = new THREE.Scene();
 
-      // カメラを作成
+      // カメラを作成　・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・（３）
       const camera = new THREE.PerspectiveCamera(45, width / height);
       // カメラの初期座標を設定
       camera.position.set(10, 10, 10);
@@ -44,31 +44,20 @@
       // カメラコントローラーを作成
       const controls = new OrbitControls(camera, canvas);
 
-      // ライトを作成
+      // ライトを作成　・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・（４）
       const light = new THREE.HemisphereLight(0xffffff, 0x000000, 1.0);
       light.castShadow = true; //影を許可
       scene.add(light);
 
-      // 形状とマテリアルからメッシュを作成します
-      const geometryCube = new THREE.BoxGeometry(1, 1, 1);
-      
-      /*
-      const standardMaterial = [
-        new THREE.MeshStandardMaterial({color: 0xff0000, roughness:0.1}),
-        new THREE.MeshStandardMaterial({color: 0xffff00, roughness:0.1}),
-        new THREE.MeshStandardMaterial({color: 0xffffff, roughness:0.1}),
-        new THREE.MeshStandardMaterial({color: 0x000000, roughness:0.1}),   
-        new THREE.MeshStandardMaterial({color: 0xff00ff, roughness:0.1}),
-        new THREE.MeshStandardMaterial({color: 0x00ff00, roughness:0.1}),
-      ];
-      */
+      // 形状とマテリアルからメッシュを作成　・・・・・・・・・・・・・・・・・・・・・・・（５）
+      const geometryCube = new THREE.BoxGeometry(1, 1, 1);      
       const standardMaterial = new THREE.MeshStandardMaterial({color: 0x6699FF, roughness:0.5});
       const mesh = new THREE.Mesh(geometryCube, standardMaterial);
       mesh.position.set(0, 0, 0);
       mesh.castShadow = true; //影を許可
       scene.add(mesh);
 
-      // 軸を追加する。
+      // 座標軸を追加する。
       const axesHelper = new THREE.AxesHelper(1000);
       scene.add(axesHelper);
 
